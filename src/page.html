@@ -1,0 +1,174 @@
+<title>Vitrina 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/*FONTS*/
+/* Layout: estudio de fotografía de producto — escenario grande a la izquierda, mesa de control a la derecha; en pantallas chicas se apilan */
+:root{
+  --bg:#0f1114; --panel:#171a1f; --line:#2a2f37; --fg:#e9ebee; --muted:#9aa2ad;
+  --accent:#ff7a1a; --accent-ink:#1a0d03; --ok:#3ccf7a; --warn:#f2b441;
+  --display:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:16px;max-width:1600px;margin:0 auto}
+@media (max-width:900px){.app{grid-template-columns:minmax(0,1fr)}}
+header.top{grid-column:1/-1;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+header.top h1{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.03em;margin:0;text-transform:uppercase}
+header.top h1 b{color:var(--accent);font-weight:700}
+header.top p{margin:0;color:var(--muted);font-size:14px}
+.stagewrap{min-width:0;display:flex;flex-direction:column;gap:10px}
+.stage{position:relative;margin:0 auto;max-width:100%;background:#000;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.stage canvas{display:block;width:100%;height:100%}
+.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;border:2px dashed var(--line);border-radius:10px;margin:14px}
+.empty h2{font-family:var(--display);font-size:clamp(22px,3vw,32px);font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin:0}
+.empty p{margin:0;color:var(--muted);max-width:46ch}
+.drop{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,122,26,.16);border:2px dashed var(--accent);border-radius:10px;font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;pointer-events:none}
+.cap{position:absolute;left:0;right:0;bottom:4.5%;text-align:center;font-family:var(--display);font-weight:700;text-transform:uppercase;pointer-events:none;text-shadow:0 0 12px rgba(0,0,0,.6)}
+.overlay{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(15,17,20,.9);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--accent)}
+.hint{color:var(--muted);font-size:13px;margin:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:16px;min-width:0;align-self:start}
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec h2{font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0;border-bottom:1px solid var(--line);padding-bottom:6px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.field{display:grid;grid-template-columns:104px minmax(0,1fr) 44px;align-items:center;gap:8px}
+.field>.seg,.field>select,.field>input[type=text]{grid-column:2 / span 2}
+.field output{font-variant-numeric:tabular-nums;color:var(--muted);text-align:right;font-size:13px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=checkbox]{accent-color:var(--accent)}
+select,input[type=text]{width:100%;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:7px 8px;font:inherit;font-size:14px}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{flex:1;background:transparent;color:var(--fg);border:0;padding:7px 2px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:7px;padding:9px 12px;font:inherit;font-weight:600;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:11px 14px}
+.btn.big{font-size:16px;padding:12px 18px}
+.btn:disabled{opacity:.5;cursor:default}
+button:focus-visible,select:focus-visible,input:focus-visible,label.btn:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.parts{display:flex;flex-direction:column;gap:6px}
+.part{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 8px;cursor:pointer}
+.part.sel{border-color:var(--accent)}
+.part input[type=color]{width:30px;height:26px;border:0;padding:0;background:none;cursor:pointer}
+.part .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.part button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:2px 4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);cursor:pointer}
+.status{font-size:13px;color:var(--muted);min-height:1.2em;margin:0}
+.status.ok{color:var(--ok)}.status.warn{color:var(--warn)}
+.filebtn{position:relative;overflow:hidden;display:inline-block}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.tag{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <h1>Vitrina <b>3D</b></h1>
+    <p>Arrastrá un 3MF o tus STL y generá un video girando para mostrarle al cliente.</p>
+  </header>
+
+  <div class="stagewrap">
+    <div class="stage" id="stage">
+      <canvas id="c" aria-label="Vista 3D"></canvas>
+      <div class="cap" id="capPrev" hidden></div>
+      <div class="empty" id="empty">
+        <h2>Arrastrá tu 3MF o tus STL acá</h2>
+        <p>Un 3MF de OrcaSlicer se abre con la pieza completa y los colores de tus filamentos. Con STL sueltos, cada archivo es una pieza y le elegís el color; si el nombre dice el color (Blanco, Negro, Rojo…), se pinta solo.</p>
+        <div class="row" style="justify-content:center">
+          <label class="btn primary filebtn" for="fileIn2">Elegir 3MF o STL<input id="fileIn2" type="file" accept=".stl,.3mf" multiple></label>
+          <button class="btn" id="sampleBtn" type="button">Ver un ejemplo</button>
+        </div>
+      </div>
+      <div class="drop" id="drop" hidden>Soltá el 3MF o los STL</div>
+      <div class="overlay" id="busy" hidden>
+        <div class="row" style="justify-content:space-between"><strong id="busyTxt">Grabando…</strong><button class="btn" id="cancelBtn" type="button">Cancelar</button></div>
+        <div class="bar"><i id="busyBar"></i></div>
+      </div>
+    </div>
+    <div class="row" style="justify-content:space-between">
+      <p class="hint">Arrastrá sobre la vista para cambiar el ángulo y usá la rueda para acercar. El video arranca siempre de frente, con la altura y el tamaño que elijas.</p>
+      <div class="row">
+        <button class="btn" id="playBtn" type="button" aria-pressed="true">Pausar giro</button>
+        <button class="btn" id="frameBtn" type="button">Reencuadrar</button>
+      </div>
+    </div>
+    <div id="resultBox" class="panel" hidden style="align-self:stretch">
+      <div class="sec">
+        <h2>Último video</h2>
+        <video id="resultVid" controls playsinline loop style="max-width:100%;max-height:440px;border-radius:8px;background:#000"></video>
+        <div class="row"><button class="btn" id="saveAgainBtn" type="button">Guardar de nuevo</button><span class="tag" id="resultInfo"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="panel" aria-label="Controles">
+    <section class="sec">
+      <h2>Piezas</h2>
+      <div class="row">
+        <label class="btn filebtn" for="fileIn">Abrir…<input id="fileIn" type="file" accept=".stl,.3mf" multiple></label>
+        <label class="btn filebtn" for="fileAdd" title="Suma piezas sin borrar las actuales">Agregar…<input id="fileAdd" type="file" accept=".stl,.3mf" multiple></label>
+        <button class="btn" id="clearBtn" type="button">Vaciar</button>
+      </div>
+      <div class="sec" id="mfBox" hidden>
+        <div class="field" id="plateRow"><label for="plateSel">Placa</label><select id="plateSel"></select></div>
+        <div class="row" id="copiesRow"><input id="copies" type="checkbox"><label for="copies">Mostrar todas las copias de la placa</label></div>
+      </div>
+      <div class="parts" id="parts"></div>
+      <div class="chips" id="chips" aria-label="Colores de filamento"></div>
+      <div class="field"><span>Rotar pieza</span>
+        <div class="seg" id="rotSeg"><button type="button" data-v="flip" title="Muestra la cara de abajo (piezas que se imprimen boca abajo)">Dar vuelta</button><button type="button" data-v="x">X 90°</button><button type="button" data-v="y">Y 90°</button><button type="button" data-v="z">Z 90°</button></div></div>
+    </section>
+
+    <section class="sec">
+      <h2>Movimiento</h2>
+      <div class="field"><span>Posición</span>
+        <div class="seg" id="poseSeg"><button type="button" data-v="print" aria-pressed="true">Como se imprime</button><button type="button" data-v="front" aria-pressed="false">De frente</button></div></div>
+      <div class="field"><label for="dur">Duración</label>
+        <select id="dur"><option value="5">5 segundos</option><option value="10" selected>10 segundos</option><option value="15">15 segundos</option><option value="20">20 segundos</option><option value="30">30 segundos</option></select></div>
+      <div class="field"><label for="turns">Vueltas</label>
+        <select id="turns"><option value="0.5">Media vuelta</option><option value="1" selected>1 vuelta</option><option value="2">2 vueltas</option><option value="3">3 vueltas</option></select></div>
+      <div class="field"><span>Sentido</span>
+        <div class="seg" id="dirSeg"><button type="button" data-v="1" aria-pressed="true">Izquierda</button><button type="button" data-v="-1" aria-pressed="false">Derecha</button></div></div>
+      <div class="field"><label for="tilt">Altura cámara</label><input id="tilt" type="range" min="-10" max="75" step="1" value="25"><output id="tiltO">25°</output></div>
+      <div class="field"><label for="zoom">Tamaño</label><input id="zoom" type="range" min="50" max="160" step="1" value="100"><output id="zoomO">100%</output></div>
+    </section>
+
+    <section class="sec">
+      <h2>Luz y material</h2>
+      <div class="field"><label for="mat">Terminación</label>
+        <select id="mat"><option value="matte" selected>Mate (PLA)</option><option value="silk">Seda</option><option value="gloss">Brillante (PETG)</option><option value="resin">Resina</option></select></div>
+      <div class="field"><label for="light">Intensidad</label><input id="light" type="range" min="20" max="200" step="1" value="100"><output id="lightO">100%</output></div>
+      <div class="field"><label for="lightAng">Dirección</label><input id="lightAng" type="range" min="-90" max="90" step="1" value="-35"><output id="lightAngO">-35°</output></div>
+      <div class="field"><label for="bgSel">Fondo</label>
+        <select id="bgSel"><option value="studio" selected>Estudio oscuro</option><option value="black">Negro</option><option value="grey">Gris claro</option><option value="white">Blanco</option></select></div>
+      <div class="row"><input id="shadow" type="checkbox" checked><label for="shadow">Sombra en el piso</label></div>
+    </section>
+
+    <section class="sec">
+      <h2>Video</h2>
+      <div class="field"><span>Formato</span>
+        <div class="seg" id="fmtSeg"><button type="button" data-v="1:1" aria-pressed="true">1:1</button><button type="button" data-v="4:5" aria-pressed="false">4:5</button><button type="button" data-v="9:16" aria-pressed="false">9:16</button><button type="button" data-v="16:9" aria-pressed="false">16:9</button></div></div>
+      <div class="field"><label for="qual">Calidad</label>
+        <select id="qual"><option value="1080" selected>Full HD (1080)</option><option value="720">HD (720)</option></select></div>
+      <div class="field"><label for="fps">Fluidez</label>
+        <select id="fps"><option value="30" selected>30 cuadros/s</option><option value="60">60 cuadros/s</option></select></div>
+      <div class="field"><label for="caption">Texto</label><input id="caption" type="text" placeholder="Opcional: nombre del cliente o del modelo" maxlength="60"></div>
+      <div class="two">
+        <button class="btn" id="simBtn" type="button">Simular video</button>
+        <button class="btn" id="snapBtn" type="button">Foto PNG</button>
+      </div>
+      <button class="btn primary" id="recBtn" type="button">Grabar video MP4</button>
+      <p class="status" id="status" role="status"></p>
+    </section>
+  </aside>
+</div>
+<script type="application/json" id="sample">/*SAMPLE*/</script>
+<script>/*BUNDLE*/</script>

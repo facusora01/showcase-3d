@@ -1,0 +1,9 @@
+node_modules/
+dist/
+app/bin/
+app/dist/
+app/resources/js/
+app/resources/index.html
+app/.tmp/
+app/.storage/
+*.log
