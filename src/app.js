@@ -302,8 +302,8 @@ function updateCapPreview() {
 // ---------- loop ----------
 let lastT = performance.now();
 function tick() {
-  const t = performance.now();
-  const dt = Math.min(0.1, (t - lastT) / 1000); lastT = t;
+  const now = performance.now();
+  const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
   if (mode === 'preview') {
     if (state.playing) state.angle += speed() * dt;
     turntable.rotation.y = state.angle;
