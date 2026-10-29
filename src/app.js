@@ -8,6 +8,10 @@ import { t, lang, locale, initStatic, setLang } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
 initStatic(document.querySelector('.app'));
+// valores de inicio de los ajustes, para "Restaurar ajustes" (la placa y las copias dependen del modelo)
+const defaults = [...document.querySelectorAll('aside select, aside input:not([type=file])')]
+  .filter((el) => el.id !== 'plateSel' && el.id !== 'copies').map((el) => [el, el.type === 'checkbox' ? el.checked : el.value]);
+const defaultSegs = ['dirSeg', 'fmtSeg'].map((id) => document.querySelector('#' + id + ' [aria-pressed=true]'));
 const canvas = $('c'), stage = $('stage');
 const statusEl = $('status');
 const setStatus = (msg, kind = '') => { statusEl.textContent = msg; statusEl.className = 'status ' + kind; };
@@ -506,6 +510,16 @@ $('caption').addEventListener('input', (e) => { state.caption = e.target.value; 
 $('playBtn').addEventListener('click', () => {
   state.playing = !state.playing; $('playBtn').setAttribute('aria-pressed', String(state.playing));
   $('playBtn').textContent = t(state.playing ? 'Pausar giro' : 'Girar');
+});
+$('resetBtn').addEventListener('click', () => {
+  for (const [el, v] of defaults) {
+    if (el.type === 'checkbox') el.checked = v; else el.value = v;
+    el.dispatchEvent(new Event(el.type === 'range' || el.type === 'text' ? 'input' : 'change'));
+  }
+  defaultSegs.forEach((b) => b.click());
+  state.angle = 0;
+  if (parts.length) autoPose(recenter()); else setPose('print');
+  setStatus(t('Ajustes restaurados.'), 'ok');
 });
 $('frameBtn').addEventListener('click', () => { state.angle = 0; frameCamera(); });
 $('simBtn').addEventListener('click', startSim);

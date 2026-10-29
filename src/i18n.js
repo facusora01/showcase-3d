@@ -60,6 +60,9 @@ const EN = {
   'Simular video': 'Preview video',
   'Foto PNG': 'PNG photo',
   'Grabar video MP4': 'Record MP4 video',
+  'Restaurar ajustes': 'Restore settings',
+  'Vuelve movimiento, luz, material y video a los valores de inicio': 'Resets motion, light, material and video to their starting values',
+  'Ajustes restaurados.': 'Settings restored.',
   // colores de filamento
   'Negro': 'Black', 'Blanco': 'White', 'Gris': 'Grey', 'Plateado': 'Silver', 'Rojo': 'Red', 'Naranja': 'Orange',
   'Amarillo': 'Yellow', 'Verde': 'Green', 'Azul': 'Blue', 'Azul oscuro': 'Navy', 'Violeta': 'Purple',
