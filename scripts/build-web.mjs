@@ -32,7 +32,17 @@ const page = fs.readFileSync(r('src/page.html'), 'utf8')
   .replace('/*SAMPLE*/', () => fs.readFileSync(r('src/sample.json'), 'utf8'))
   .replace('/*BUNDLE*/', () => js);
 
-const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>' + body + '</body></html>';
+// vista previa del link (WhatsApp, redes): la imagen la publica el workflow de GitHub Pages
+const SITE = 'https://facusora01.github.io/showcase-3d/';
+const DESC = 'Mostrá tus modelos 3D (3MF y STL) con sus colores y generá un video girando para tus clientes. En español e inglés.';
+const meta = [
+  ['name', 'description', DESC], ['name', 'theme-color', '#0f1114'],
+  ['property', 'og:type', 'website'], ['property', 'og:site_name', 'Showcase 3D'], ['property', 'og:title', 'Showcase 3D'],
+  ['property', 'og:description', DESC], ['property', 'og:url', SITE],
+  ['property', 'og:image', SITE + 'og.png'], ['property', 'og:image:width', '1200'], ['property', 'og:image:height', '630'],
+  ['property', 'og:image:alt', 'Showcase 3D: modelo 3D naranja girando'], ['name', 'twitter:card', 'summary_large_image'],
+].map(([k, n, v]) => `<meta ${k}="${n}" content="${v}">`).join('');
+const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' + meta + '<link rel="icon" href="favicon.png"></head><body>' + body + '</body></html>';
 
 // 1) versión para abrir en el navegador
 fs.writeFileSync(r('dist', 'Showcase 3D.html'), wrap(page));
