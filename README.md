@@ -7,7 +7,7 @@ Programa para Windows y página web que muestra modelos 3D con sus colores reale
 - Duración, vueltas, sentido, altura de cámara, tamaño, luz, terminación (mate, seda, brillante, resina), fondo y texto opcional.
 - Formatos 1:1, 4:5, 9:16 y 16:9, en HD o Full HD, a 30 o 60 cuadros por segundo.
 - En español o inglés (botón ES / EN arriba a la derecha).
-- Versión web: https://facusora01.github.io/showcase-3d/ (Chrome o Edge para grabar video).
+- Versión web: https://showcase3d.facundosorasio.com/ (Chrome o Edge para grabar video).
 - Funciona sin internet. El `.exe` es un solo archivo de unos 4 MB.
 
 ## Uso

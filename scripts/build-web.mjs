@@ -33,7 +33,7 @@ const page = fs.readFileSync(r('src/page.html'), 'utf8')
   .replace('/*BUNDLE*/', () => js);
 
 // vista previa del link (WhatsApp, redes): la imagen la publica el workflow de GitHub Pages
-const SITE = 'https://facusora01.github.io/showcase-3d/';
+const SITE = 'https://showcase3d.facundosorasio.com/';
 const DESC = 'Mostrá tus modelos 3D (3MF y STL) con sus colores y generá un video girando para tus clientes. En español e inglés.';
 const meta = [
   ['name', 'description', DESC], ['name', 'theme-color', '#0f1114'],
