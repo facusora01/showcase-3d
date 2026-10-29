@@ -39,7 +39,7 @@ const meta = [
   ['name', 'description', DESC], ['name', 'theme-color', '#0f1114'],
   ['property', 'og:type', 'website'], ['property', 'og:site_name', 'Showcase 3D'], ['property', 'og:title', 'Showcase 3D'],
   ['property', 'og:description', DESC], ['property', 'og:url', SITE],
-  ['property', 'og:image', SITE + 'og.png'], ['property', 'og:image:width', '1200'], ['property', 'og:image:height', '630'],
+  ['property', 'og:image', SITE + 'og.jpg'], ['property', 'og:image:width', '1200'], ['property', 'og:image:height', '630'], ['property', 'og:image:type', 'image/jpeg'],
   ['property', 'og:image:alt', 'Showcase 3D: modelo 3D naranja girando'], ['name', 'twitter:card', 'summary_large_image'],
 ].map(([k, n, v]) => `<meta ${k}="${n}" content="${v}">`).join('');
 const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' + meta + '<link rel="icon" href="favicon.png"></head><body>' + body + '</body></html>';
