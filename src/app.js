@@ -4,8 +4,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 import { parse3MF } from './threemf.js';
+import { t, lang, locale, initStatic, setLang } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
+initStatic(document.querySelector('.app'));
 const canvas = $('c'), stage = $('stage');
 const statusEl = $('status');
 const setStatus = (msg, kind = '') => { statusEl.textContent = msg; statusEl.className = 'status ' + kind; };
@@ -162,21 +164,22 @@ function renderParts() {
   parts.forEach((p, i) => {
     const row = document.createElement('div'); row.className = 'part' + (i === selected ? ' sel' : '');
     const col = document.createElement('input'); col.type = 'color'; col.value = p.color; col.id = 'pc' + i;
-    col.setAttribute('aria-label', 'Color de ' + p.name);
+    col.setAttribute('aria-label', t('Color de {0}', p.name));
     col.addEventListener('input', () => { p.color = col.value; p.mesh.material.color.set(col.value); });
     const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = p.name; nm.title = p.name;
-    const del = document.createElement('button'); del.type = 'button'; del.textContent = '×'; del.title = 'Quitar esta pieza';
+    const del = document.createElement('button'); del.type = 'button'; del.textContent = '×'; del.title = t('Quitar esta pieza');
     del.addEventListener('click', (e) => { e.stopPropagation(); model.remove(p.mesh); p.mesh.geometry.dispose(); p.mesh.material.dispose(); parts.splice(i, 1); selected = 0; afterChange(false); });
     row.addEventListener('click', () => { selected = i; renderParts(); });
     row.append(col, nm, del); box.append(row);
   });
-  if (parts.length) { const h = document.createElement('p'); h.className = 'hint'; h.textContent = 'Tocá una pieza y elegí su color abajo.'; box.append(h); }
+  if (parts.length) { const h = document.createElement('p'); h.className = 'hint'; h.textContent = t('Tocá una pieza y elegí su color abajo.'); box.append(h); }
   $('empty').hidden = parts.length > 0;
 }
 function renderChips() {
+  $('chips').textContent = '';
   for (const [n, c] of FILAMENT) {
-    const b = document.createElement('button'); b.type = 'button'; b.style.background = c; b.title = n;
-    b.setAttribute('aria-label', 'Pintar la pieza seleccionada de ' + n);
+    const b = document.createElement('button'); b.type = 'button'; b.style.background = c; b.title = t(n);
+    b.setAttribute('aria-label', t('Pintar la pieza seleccionada de {0}', t(n)));
     b.addEventListener('click', () => { const p = parts[selected]; if (!p) return; p.color = c; p.mesh.material.color.set(c); renderParts(); });
     $('chips').append(b);
   }
@@ -190,19 +193,19 @@ async function loadFiles(files, add = false) {
   const mf = all.filter((f) => /\.3mf$/i.test(f.name));
   const stl = all.filter((f) => /\.stl$/i.test(f.name));
   const skipped = all.length - stl.length - mf.length;
-  if (!stl.length && !mf.length) { setStatus('Solo abre archivos .stl y .3mf.', 'warn'); return; }
+  if (!stl.length && !mf.length) { setStatus(t('Solo abre archivos .stl y .3mf.'), 'warn'); return; }
   if (!add) { clearParts(); current3mf = null; show3mfControls(); }
   let bad = 0;
   if (mf.length) {
     const f = mf[0];
-    setStatus('Leyendo ' + f.name + '…');
+    setStatus(t('Leyendo {0}…', f.name));
     await new Promise((r) => setTimeout(r, 30));
     try {
       const doc = parse3MF(await f.arrayBuffer());
       current3mf = { doc, name: f.name.replace(/\.3mf$/i, '') };
       add3mfParts(0, false);
       show3mfControls();
-    } catch (e) { bad++; setStatus('No pude leer ' + f.name + ': ' + (e.message || e), 'warn'); }
+    } catch (e) { bad++; setStatus(t('No pude leer {0}: {1}', f.name, t(e.message || String(e))), 'warn'); }
   }
   stl.sort((a, b) => a.name.localeCompare(b.name, 'es', { numeric: true }));
   for (let i = 0; i < stl.length; i++) {
@@ -215,9 +218,9 @@ async function loadFiles(files, add = false) {
   if (!parts.length) { renderParts(); return; }
   afterChange(!add);
   const tris = parts.reduce((s, p) => s + p.mesh.geometry.attributes.position.count / 3, 0);
-  const extra = (mf.length > 1 ? ` Abrí solo el primer 3MF (${mf[0].name}).` : '') + (skipped ? ` Ignoré ${skipped} archivo(s) que no son STL ni 3MF.` : '');
-  setStatus(bad ? `No pude leer ${bad} archivo(s).` + extra :
-    `Listo: ${parts.length} pieza(s) de color, ${Math.round(tris).toLocaleString('es-AR')} triángulos.` + extra, bad ? 'warn' : 'ok');
+  const extra = (mf.length > 1 ? t(' Abrí solo el primer 3MF ({0}).', mf[0].name) : '') + (skipped ? t(' Ignoré {0} archivo(s) que no son STL ni 3MF.', skipped) : '');
+  setStatus(bad ? t('No pude leer {0} archivo(s).', bad) + extra :
+    t('Listo: {0} pieza(s) de color, {1} triángulos.', parts.length, Math.round(tris).toLocaleString(locale())) + extra, bad ? 'warn' : 'ok');
 }
 function add3mfParts(plateIdx, allCopies) {
   const list = current3mf.doc.buildParts(plateIdx, allCopies);
@@ -228,7 +231,7 @@ function show3mfControls() {
   box.hidden = !d || (d.plates.length < 2 && !d.hasCopies);
   if (!d) return;
   const sel = $('plateSel'); sel.textContent = '';
-  d.plates.forEach((id, i) => { const o = document.createElement('option'); o.value = i; o.textContent = 'Placa ' + id; sel.append(o); });
+  d.plates.forEach((id, i) => { const o = document.createElement('option'); o.value = i; o.textContent = t('Placa {0}', id); sel.append(o); });
   $('plateRow').hidden = d.plates.length < 2;
   $('copiesRow').hidden = !d.hasCopies;
   $('copies').checked = false;
@@ -238,7 +241,7 @@ function reload3mf() {
   clearParts();
   add3mfParts(+$('plateSel').value, $('copies').checked);
   afterChange(true);
-  setStatus(`Mostrando ${$('plateSel').selectedOptions[0]?.textContent || 'placa'}${$('copies').checked ? ' con todas las copias' : ''}.`, 'ok');
+  setStatus(t($('copies').checked ? 'Mostrando {0} con todas las copias.' : 'Mostrando {0}.', $('plateSel').selectedOptions[0]?.textContent || t('Placa')), 'ok');
 }
 function layerParts() {
   // la pieza más grande (la base) cede en las caras que comparte con las demás, para que no titilen
@@ -263,10 +266,10 @@ async function loadSample() {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(buf, 0, p.nv * 3), 3));
     g.setIndex(new THREE.BufferAttribute(new Uint32Array(buf.slice(p.nv * 12), 0, p.ni), 1));
-    addPart('Ejemplo ' + p.name, g, colorFromName(p.name, 0));
+    addPart(t('Ejemplo {0}', t(p.name)), g, colorFromName(p.name, 0));
   }
   afterChange(true);
-  setStatus('Ejemplo cargado. Arrastrá tus STL para reemplazarlo.', 'ok');
+  setStatus(t('Ejemplo cargado. Arrastrá tus STL para reemplazarlo.'), 'ok');
 }
 
 // ---------- escenario ----------
@@ -304,17 +307,17 @@ function tick() {
     const el = (performance.now() - sim.t0) / 1000;
     turntable.rotation.y = sim.start + speed() * Math.min(el, state.dur);
     $('busyBar').style.width = Math.min(100, 100 * el / state.dur).toFixed(1) + '%';
-    $('busyTxt').textContent = `Simulación: ${Math.min(el, state.dur).toFixed(1)} / ${state.dur} s`;
+    $('busyTxt').textContent = t('Simulación: {0} / {1} s', Math.min(el, state.dur).toFixed(1), state.dur);
     if (el >= state.dur || sim.cancel) endSim();
   }
   if (mode !== 'export') { controls.update(); renderer.render(scene, camera); }
   requestAnimationFrame(tick);
 }
 function startSim() {
-  if (!parts.length) { setStatus('Primero cargá una pieza.', 'warn'); return; }
+  if (!parts.length) { setStatus(t('Primero cargá una pieza.'), 'warn'); return; }
   mode = 'sim'; sim = { t0: performance.now(), start: 0, cancel: false };
   $('busy').hidden = false; lockButtons(true); $('simBtn').disabled = true;
-  setStatus('Así va a quedar el video. Si te gusta, tocá Grabar video MP4.');
+  setStatus(t('Así va a quedar el video. Si te gusta, tocá Grabar video MP4.'));
 }
 function endSim() { turntable.rotation.y = state.angle = 0; mode = 'preview'; $('busy').hidden = true; lockButtons(false); }
 function lockButtons(on) { ['recBtn', 'snapBtn', 'simBtn'].forEach((id) => ($(id).disabled = on)); }
@@ -347,35 +350,35 @@ async function saveFile(blob, filename) {
     try {
       const ext = filename.split('.').pop();
       let dir = ''; try { dir = await NL.os.getPath(ext === 'png' ? 'pictures' : 'videos'); } catch (e) {}
-      const path = await NL.os.showSaveDialog('Guardar ' + (ext === 'png' ? 'foto' : 'video'), {
+      const path = await NL.os.showSaveDialog(t(ext === 'png' ? 'Guardar foto' : 'Guardar video'), {
         defaultPath: dir ? dir + '\\' + filename : filename,
-        filters: [{ name: ext === 'png' ? 'Imagen PNG' : 'Video ' + ext.toUpperCase(), extensions: [ext] }],
+        filters: [{ name: ext === 'png' ? t('Imagen PNG') : 'Video ' + ext.toUpperCase(), extensions: [ext] }],
       });
-      if (!path) { setStatus('No se guardó. Usá “Guardar de nuevo” si lo querés.', 'warn'); return; }
+      if (!path) { setStatus(t('No se guardó. Usá “Guardar de nuevo” si lo querés.'), 'warn'); return; }
       const finalPath = /\.[a-z0-9]+$/i.test(path) ? path : path + '.' + ext;
       await NL.filesystem.writeBinaryFile(finalPath, await blob.arrayBuffer());
-      setStatus('Guardado en ' + finalPath, 'ok');
-    } catch (e) { setStatus('No se pudo guardar: ' + (e && (e.message || e.code) || e), 'warn'); }
+      setStatus(t('Guardado en {0}', finalPath), 'ok');
+    } catch (e) { setStatus(t('No se pudo guardar: {0}', e && (e.message || e.code) || e), 'warn'); }
     return;
   }
   await dlReady;
   if (dl) {
-    try { await dl.save({ filename, data: blob }); setStatus('Guardado: ' + filename, 'ok'); }
+    try { await dl.save({ filename, data: blob }); setStatus(t('Guardado: {0}', filename), 'ok'); }
     catch (e) {
       const c = e && e.code;
-      setStatus(c === 'declined' ? 'No se guardó. Usá “Guardar de nuevo” si lo querés.' :
-        c === 'rate_limited' ? 'Hay otra descarga esperando confirmación.' : 'Esta vista no permite descargar; usá la versión del escritorio.', 'warn');
+      setStatus(c === 'declined' ? t('No se guardó. Usá “Guardar de nuevo” si lo querés.') :
+        c === 'rate_limited' ? t('Hay otra descarga esperando confirmación.') : t('Esta vista no permite descargar; usá la versión del escritorio.'), 'warn');
     }
     return;
   }
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = filename; document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 60000);
-  setStatus('Guardado en tu carpeta Descargas: ' + filename, 'ok');
+  setStatus(t('Guardado en tu carpeta Descargas: {0}', filename), 'ok');
 }
 function baseName() {
-  const n = (parts[0] && parts[0].name || 'pieza').replace(/\s+\d+\s+\D+$/, '').replace(/[^\w\- áéíóúñÁÉÍÓÚÑ]/g, '').trim();
-  return (n || 'pieza').replace(/\s+/g, '_');
+  const n = (parts[0] && parts[0].name || t('pieza')).replace(/\s+\d+\s+\D+$/, '').replace(/[^\w\- áéíóúñÁÉÍÓÚÑ]/g, '').trim();
+  return (n || t('pieza')).replace(/\s+/g, '_');
 }
 
 // ---------- exportar ----------
@@ -402,7 +405,7 @@ function endExport() { mode = 'preview'; $('busy').hidden = true; lockButtons(fa
 const yieldUI = () => new Promise((r) => setTimeout(r, 0));
 
 async function recordVideo() {
-  if (!parts.length) { setStatus('Primero cargá una pieza.', 'warn'); return; }
+  if (!parts.length) { setStatus(t('Primero cargá una pieza.'), 'warn'); return; }
   const [W, H] = outSize(), fps = state.fps, dur = state.dur, N = Math.round(dur * fps);
   try { await document.fonts.load('700 40px "Barlow Semi Condensed"'); } catch (e) {}
   const comp = document.createElement('canvas'); comp.width = W; comp.height = H;
@@ -418,7 +421,7 @@ async function recordVideo() {
   const fname = `${baseName()}_${dur}s_${state.fmt.replace(':', 'x')}`;
   try {
     if (cfg) {
-      $('busyTxt').textContent = `Generando video de ${dur} s…`;
+      $('busyTxt').textContent = t('Generando video de {0} s…', dur);
       const muxer = new Muxer({ target: new ArrayBufferTarget(), video: { codec: 'avc', width: W, height: H, frameRate: fps }, fastStart: 'in-memory' });
       let err = null;
       const enc = new VideoEncoder({ output: (c, m) => muxer.addVideoChunk(c, m), error: (e) => (err = e) });
@@ -429,27 +432,27 @@ async function recordVideo() {
         const fr = new VideoFrame(comp, { timestamp: Math.round(i * 1e6 / fps), duration: Math.round(1e6 / fps) });
         enc.encode(fr, { keyFrame: i % (fps * 2) === 0 }); fr.close();
         while (enc.encodeQueueSize > 6) await new Promise((r) => setTimeout(r, 4));
-        if (i % 3 === 0) { $('busyBar').style.width = (100 * i / N).toFixed(1) + '%'; $('busyTxt').textContent = `Generando video: ${Math.round(100 * i / N)}%`; await yieldUI(); }
+        if (i % 3 === 0) { $('busyBar').style.width = (100 * i / N).toFixed(1) + '%'; $('busyTxt').textContent = t('Generando video: {0}%', Math.round(100 * i / N)); await yieldUI(); }
       }
       if (err) throw err;
-      if (cancelReq) { enc.close(); setStatus('Grabación cancelada.', 'warn'); return; }
+      if (cancelReq) { enc.close(); setStatus(t('Grabación cancelada.'), 'warn'); return; }
       await enc.flush(); enc.close(); muxer.finalize();
       finish(new Blob([muxer.target.buffer], { type: 'video/mp4' }), fname + '.mp4', W, H, dur);
     } else {
       const mime = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'].find((m) => window.MediaRecorder && MediaRecorder.isTypeSupported(m));
-      if (!mime) throw new Error('este navegador no puede grabar video; usá Edge o Chrome actualizados.');
-      $('busyTxt').textContent = `Grabando en tiempo real (${dur} s)…`;
+      if (!mime) throw new Error(t('este navegador no puede grabar video; usá Edge o Chrome actualizados.'));
+      $('busyTxt').textContent = t('Grabando en tiempo real ({0} s)…', dur);
       const rec = new MediaRecorder(comp.captureStream(fps), { mimeType: mime, videoBitsPerSecond: Math.round(W * H * fps * 0.16) });
       const chunks = []; rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
       const stopped = new Promise((r) => (rec.onstop = r));
       rec.start(250); const t0 = performance.now();
       await new Promise((res) => { const step = () => { const el = (performance.now() - t0) / 1000; if (cancelReq || el >= dur) return res(); draw(el); $('busyBar').style.width = (100 * el / dur).toFixed(1) + '%'; requestAnimationFrame(step); }; step(); });
       rec.stop(); await stopped;
-      if (cancelReq) { setStatus('Grabación cancelada.', 'warn'); return; }
+      if (cancelReq) { setStatus(t('Grabación cancelada.'), 'warn'); return; }
       const ext = mime.includes('mp4') ? 'mp4' : 'webm';
       finish(new Blob(chunks, { type: mime.split(';')[0] }), fname + '.' + ext, W, H, dur);
     }
-  } catch (e) { setStatus('No se pudo grabar: ' + (e && e.message || e), 'warn'); }
+  } catch (e) { setStatus(t('No se pudo grabar: {0}', e && e.message || e), 'warn'); }
   finally { turntable.rotation.y = state.angle = 0; endExport(); }
 }
 function finish(blob, name, W, H, dur) {
@@ -459,7 +462,7 @@ function finish(blob, name, W, H, dur) {
   $('resultBox').hidden = false; saveFile(blob, name);
 }
 async function snapshot() {
-  if (!parts.length) { setStatus('Primero cargá una pieza.', 'warn'); return; }
+  if (!parts.length) { setStatus(t('Primero cargá una pieza.'), 'warn'); return; }
   const [W, H] = outSize(); beginExport(W, H);
   try {
     try { await document.fonts.load('700 40px "Barlow Semi Condensed"'); } catch (e) {}
@@ -502,7 +505,7 @@ $('fps').addEventListener('change', (e) => (state.fps = +e.target.value));
 $('caption').addEventListener('input', (e) => { state.caption = e.target.value; updateCapPreview(); });
 $('playBtn').addEventListener('click', () => {
   state.playing = !state.playing; $('playBtn').setAttribute('aria-pressed', String(state.playing));
-  $('playBtn').textContent = state.playing ? 'Pausar giro' : 'Girar';
+  $('playBtn').textContent = t(state.playing ? 'Pausar giro' : 'Girar');
 });
 $('frameBtn').addEventListener('click', () => { state.angle = 0; frameCamera(); });
 $('simBtn').addEventListener('click', startSim);
@@ -513,7 +516,7 @@ $('saveAgainBtn').addEventListener('click', () => lastVideo && saveFile(lastVide
 $('clearBtn').addEventListener('click', () => { clearParts(); current3mf = null; show3mfControls(); afterChange(false); setStatus(''); });
 $('plateSel').addEventListener('change', reload3mf);
 $('copies').addEventListener('change', reload3mf);
-$('sampleBtn').addEventListener('click', () => loadSample().catch(() => setStatus('No pude abrir el ejemplo.', 'warn')));
+$('sampleBtn').addEventListener('click', () => loadSample().catch(() => setStatus(t('No pude abrir el ejemplo.'), 'warn')));
 for (const [id, add] of [['fileIn', false], ['fileIn2', false], ['fileAdd', true]])
   $(id).addEventListener('change', (e) => { loadFiles(e.target.files, add); e.target.value = ''; });
 // arrastrar y soltar en toda la ventana
@@ -523,7 +526,17 @@ window.addEventListener('dragover', (e) => e.preventDefault());
 window.addEventListener('dragleave', () => { if (--depth <= 0) { depth = 0; $('drop').hidden = true; } });
 window.addEventListener('drop', (e) => { e.preventDefault(); depth = 0; $('drop').hidden = true; if (e.dataTransfer.files.length) loadFiles(e.dataTransfer.files, e.shiftKey); });
 
-renderChips(); applyBg(); layoutStage(); renderParts(); applyPose(); frameCamera();
-setStatus('Arrastrá un 3MF o uno o varios STL a la ventana para empezar.');
+// idioma: reescribe los textos fijos y los que arma el programa
+function applyLang() {
+  [...$('langSeg').children].forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === lang)));
+  $('playBtn').textContent = t(state.playing ? 'Pausar giro' : 'Girar');
+  if (current3mf) [...$('plateSel').options].forEach((o, i) => (o.textContent = t('Placa {0}', current3mf.doc.plates[i])));
+  renderChips(); renderParts();
+  if (!parts.length) setStatus(t('Arrastrá un 3MF o uno o varios STL a la ventana para empezar.'));
+}
+seg('langSeg', null, null, (v) => setLang(v, applyLang));
+
+applyBg(); layoutStage(); applyPose(); frameCamera();
+setLang(lang, applyLang);
 requestAnimationFrame(tick);
-window.__vitrina = { state, parts: () => parts };
+window.__showcase = { state, parts: () => parts };

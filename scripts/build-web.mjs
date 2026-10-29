@@ -35,10 +35,10 @@ const page = fs.readFileSync(r('src/page.html'), 'utf8')
 const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>' + body + '</body></html>';
 
 // 1) versión para abrir en el navegador
-fs.writeFileSync(r('dist', 'Vitrina 3D.html'), wrap(page));
+fs.writeFileSync(r('dist', 'Showcase 3D.html'), wrap(page));
 // 2) versión para el programa de escritorio (agrega el cliente de Neutralino)
 const i = page.lastIndexOf('<script>');
 const desk = page.slice(0, i) + '<script src="/js/neutralino.js"></script>\n' + page.slice(i);
 fs.mkdirSync(r('app/resources'), { recursive: true });
 fs.writeFileSync(r('app/resources/index.html'), wrap(desk));
-console.log('Web lista: dist/Vitrina 3D.html y app/resources/index.html');
+console.log('Web lista: dist/Showcase 3D.html y app/resources/index.html');

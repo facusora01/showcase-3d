@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
-  "applicationId": "com.vitrina3d.app",
+  "applicationId": "com.showcase3d.app",
   "version": "1.0.0",
   "defaultMode": "window",
   "port": 0,
@@ -23,7 +23,7 @@
   ],
   "modes": {
     "window": {
-      "title": "Vitrina 3D",
+      "title": "Showcase 3D",
       "width": 1500,
       "height": 950,
       "minWidth": 900,
@@ -41,7 +41,7 @@
     }
   },
   "cli": {
-    "binaryName": "Vitrina3D",
+    "binaryName": "Showcase3D",
     "resourcesPath": "/resources/",
     "extensionsPath": "/extensions/",
     "clientLibrary": "/resources/js/neutralino.js",

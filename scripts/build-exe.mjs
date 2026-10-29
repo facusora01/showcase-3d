@@ -27,5 +27,5 @@ fs.writeFileSync(bin, Buffer.from(exe.generate()));
 
 run('npx neu build --release --embed-resources');
 fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
-fs.copyFileSync(path.join(app, 'dist', 'Vitrina3D', 'Vitrina3D-win_x64.exe'), path.join(root, 'dist', 'Vitrina 3D.exe'));
-console.log('Listo: dist/Vitrina 3D.exe');
+fs.copyFileSync(path.join(app, 'dist', 'Showcase3D', 'Showcase3D-win_x64.exe'), path.join(root, 'dist', 'Showcase 3D.exe'));
+console.log('Listo: dist/Showcase 3D.exe');

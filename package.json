@@ -1,5 +1,5 @@
 {
-  "name": "vitrina-3d",
+  "name": "showcase-3d",
   "version": "1.0.0",
   "private": true,
   "description": "Programa de escritorio para mostrar modelos 3D (3MF y STL) con sus colores y generar videos girando para clientes.",
