@@ -26,7 +26,7 @@ La primera vez Windows puede mostrar "Windows protegió su PC" porque el ejecuta
 | `src/app.js` | Escena 3D (three.js), controles, simulación, grabación de video (WebCodecs + mp4-muxer) y guardado. |
 | `src/i18n.js` | Textos en inglés y cambio de idioma. |
 | `src/threemf.js` | Lector de 3MF: núcleo, extensión de producción de OrcaSlicer/Bambu, colores de filamento, pintura multicolor, placas y copias. |
-| `src/sample.json` | Modelo de ejemplo comprimido. |
+| `src/sample.json` | Escultura de ejemplo comprimida (la genera `scripts/make-sample.mjs`). |
 | `app/` | Proyecto de [Neutralinojs](https://neutralino.js.org): la ventana usa WebView2, que ya viene en Windows 10 y 11. |
 | `scripts/build-web.mjs` | Empaqueta todo en un solo HTML (librerías y fuentes embebidas). |
 | `scripts/build-exe.mjs` | Compila el `.exe` con la app embebida y el ícono. |
