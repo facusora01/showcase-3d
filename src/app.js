@@ -178,6 +178,11 @@ function renderParts() {
   });
   if (parts.length) { const h = document.createElement('p'); h.className = 'hint'; h.textContent = t('Tocá una pieza y elegí su color abajo.'); box.append(h); }
   $('empty').hidden = parts.length > 0;
+  markChips();
+}
+function markChips() {
+  const cur = parts[selected]?.color?.toLowerCase();
+  [...$('chips').children].forEach((b, i) => b.classList.toggle('on', FILAMENT[i][1] === cur));
 }
 function renderChips() {
   $('chips').textContent = '';
@@ -187,6 +192,7 @@ function renderChips() {
     b.addEventListener('click', () => { const p = parts[selected]; if (!p) return; p.color = c; p.mesh.material.color.set(c); renderParts(); });
     $('chips').append(b);
   }
+  markChips();
 }
 
 // ---------- carga ----------
@@ -330,7 +336,7 @@ function lockButtons(on) { ['recBtn', 'snapBtn', 'simBtn'].forEach((id) => ($(id
 function drawCaption(ctx, W, H) {
   const txt = state.caption.trim(); if (!txt) return;
   const size = Math.round(Math.min(W, H) * 0.06);
-  ctx.font = `700 ${size}px "Barlow Semi Condensed", "Arial Narrow", sans-serif`;
+  ctx.font = `600 ${size}px Sora, system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.fillStyle = lightBg() ? '#14161a' : '#ffffff';
   ctx.shadowColor = lightBg() ? 'rgba(255,255,255,.4)' : 'rgba(0,0,0,.6)'; ctx.shadowBlur = size * 0.3;
@@ -411,7 +417,7 @@ const yieldUI = () => new Promise((r) => setTimeout(r, 0));
 async function recordVideo() {
   if (!parts.length) { setStatus(t('Primero cargá una pieza.'), 'warn'); return; }
   const [W, H] = outSize(), fps = state.fps, dur = state.dur, N = Math.round(dur * fps);
-  try { await document.fonts.load('700 40px "Barlow Semi Condensed"'); } catch (e) {}
+  try { await document.fonts.load('600 40px Sora'); } catch (e) {}
   const comp = document.createElement('canvas'); comp.width = W; comp.height = H;
   const ctx = comp.getContext('2d');
   const start = 0, w = speed(); // el video siempre arranca de frente
@@ -469,7 +475,7 @@ async function snapshot() {
   if (!parts.length) { setStatus(t('Primero cargá una pieza.'), 'warn'); return; }
   const [W, H] = outSize(); beginExport(W, H);
   try {
-    try { await document.fonts.load('700 40px "Barlow Semi Condensed"'); } catch (e) {}
+    try { await document.fonts.load('600 40px Sora'); } catch (e) {}
     renderer.render(scene, camera);
     const c = document.createElement('canvas'); c.width = W; c.height = H;
     const ctx = c.getContext('2d'); ctx.drawImage(renderer.domElement, 0, 0, W, H); drawCaption(ctx, W, H);
@@ -488,7 +494,7 @@ function seg(id, k, cast, after) {
 }
 function range(id, k, fmt, cast, after) {
   const el = $(id), out = $(id + 'O');
-  const upd = () => { state[k] = cast(+el.value); out.textContent = fmt(+el.value); after && after(); };
+  const upd = () => { el.style.setProperty('--p', (100 * (el.value - el.min) / (el.max - el.min)) + '%'); state[k] = cast(+el.value); out.textContent = fmt(+el.value); after && after(); };
   el.addEventListener('input', upd); upd();
 }
 seg('poseSeg', null, null, (v) => setPose(v));

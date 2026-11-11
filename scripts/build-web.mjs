@@ -20,15 +20,21 @@ const face = (fam, file, w) => {
   return `@font-face{font-family:"${fam}";font-style:normal;font-weight:${w};font-display:swap;src:url(data:font/woff2;base64,${b}) format("woff2")}\n`;
 };
 const fonts = [
-  face('Barlow', 'barlow/files/barlow-latin-400-normal.woff2', 400),
-  face('Barlow', 'barlow/files/barlow-latin-500-normal.woff2', 500),
-  face('Barlow', 'barlow/files/barlow-latin-600-normal.woff2', 600),
-  face('Barlow Semi Condensed', 'barlow-semi-condensed/files/barlow-semi-condensed-latin-600-normal.woff2', 600),
-  face('Barlow Semi Condensed', 'barlow-semi-condensed/files/barlow-semi-condensed-latin-700-normal.woff2', 700),
+  face('Sora', 'sora/files/sora-latin-600-normal.woff2', 600),
+  face('Inter', 'inter/files/inter-latin-400-normal.woff2', 400),
+  face('Inter', 'inter/files/inter-latin-500-normal.woff2', 500),
+  face('Inter', 'inter/files/inter-latin-600-normal.woff2', 600),
+  face('JetBrains Mono', 'jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2', 500),
 ].join('');
+
+// íconos (Figma) como máscaras CSS: ICON(nombre) -> url(data:...) y el isotipo de Sora en línea
+const svg = (n) => fs.readFileSync(r('src/icons', n + '.svg'), 'utf8').trim();
+const icon = (n) => 'url("data:image/svg+xml;base64,' + Buffer.from(svg(n)).toString('base64') + '")';
 
 const page = fs.readFileSync(r('src/page.html'), 'utf8')
   .replace('/*FONTS*/', () => fonts)
+  .replace(/ICON\((\w+)\)/g, (_, n) => icon(n))
+  .replace('<!--ISOTIPO-->', () => svg('isotipo').replace(/ style="[^"]*"/, '').replace('<svg ', '<svg aria-hidden="true" '))
   .replace('/*SAMPLE*/', () => fs.readFileSync(r('src/sample.json'), 'utf8'))
   .replace('/*BUNDLE*/', () => js);
 
@@ -42,7 +48,7 @@ const meta = [
   ['property', 'og:image', SITE + 'og.jpg'], ['property', 'og:image:width', '1200'], ['property', 'og:image:height', '630'], ['property', 'og:image:type', 'image/jpeg'],
   ['property', 'og:image:alt', 'Showcase 3D: modelo 3D naranja girando'], ['name', 'twitter:card', 'summary_large_image'],
 ].map(([k, n, v]) => `<meta ${k}="${n}" content="${v}">`).join('');
-const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' + meta + '<link rel="icon" href="favicon.png"></head><body>' + body + '</body></html>';
+const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' + meta + '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,' + Buffer.from(svg('isotipo')).toString('base64') + '"><link rel="icon" href="favicon.png"></head><body>' + body + '</body></html>';
 
 // 1) versión para abrir en el navegador
 fs.writeFileSync(r('dist', 'Showcase 3D.html'), wrap(page));
