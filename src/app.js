@@ -285,7 +285,7 @@ async function loadSample() {
 // ---------- escenario ----------
 function layoutStage() {
   const ar = aspect(), wrapW = stage.parentElement.clientWidth;
-  const maxH = Math.max(280, window.innerHeight - 150);
+  const maxH = Math.max(280, window.innerHeight - 170);
   let w = wrapW, h = w / ar; if (h > maxH) { h = maxH; w = h * ar; }
   stage.style.width = Math.round(w) + 'px'; stage.style.height = Math.round(h) + 'px';
   if (mode !== 'export') {

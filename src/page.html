@@ -115,6 +115,14 @@ button:focus-visible,select:focus-visible,input:focus-visible,label.btn:focus-wi
 .tag{font-family:var(--mono);font-size:12px;line-height:16px;color:var(--muted);background:var(--control);border-radius:5px;padding:2px 6px}
 .sec>.row>.btn.filebtn{flex:1;padding:0 10px}
 .sec>.row>#clearBtn{flex:none;padding:0 10px}
+/* escritorio: la vista previa queda fija y solo scrollea el panel de ajustes */
+@media (min-width:901px){
+  html,body{overflow:hidden}
+  body{height:100dvh;padding-bottom:12px}
+  .app{height:100%;grid-template-rows:auto minmax(0,1fr)}
+  .stagewrap{min-height:0;overflow-y:auto;scrollbar-width:thin}
+  aside.panel{align-self:stretch;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent}
+}
 @media (max-width:900px){
   .btn,.seg button,select,input[type=text],#rotSeg button{min-height:44px}
 }
