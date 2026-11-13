@@ -139,6 +139,8 @@ function frameCamera() {
   const t = THREE.MathUtils.degToRad(state.tilt);
   camera.position.set(0, Math.sin(t) * dist, Math.cos(t) * dist);
   camera.near = dist / 50; camera.far = dist * 20; camera.updateProjectionMatrix();
+  // la rueda no puede meter la cámara dentro de la pieza ni sacarla más allá de far
+  controls.minDistance = R * 1.3; controls.maxDistance = dist * 5;
   controls.target.set(0, 0, 0); controls.update();
   placeLights(R);
 }
