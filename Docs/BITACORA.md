@@ -1,5 +1,20 @@
 # Bitácora
 
+## 2026-11-15 — Caja "Último video"
+
+**Qué se hizo**
+- Facu reportó que al terminar de grabar, la caja "Último video" aplastaba el visor
+  y no había forma de cerrarla.
+- Causa: `.stage` tiene alto fijo (lo calcula `app.js`) pero era hijo flex de `.stagewrap`,
+  que en escritorio tiene alto fijo; al aparecer el video, flexbox achicaba el visor.
+  Arreglo: `.stagewrap>*{flex:none}`; ahora el video queda abajo y `.stagewrap` scrollea.
+- Botón "Cerrar" (ícono `close`) en la caja: pausa el video y la oculta.
+
+**Probado:** en Chrome, el alto del visor no cambia con la caja visible; botón traducido (Close).
+**No probado:** grabación real de punta a punta (se mostró la caja a mano).
+
+**Por dónde seguir:** ver `PLAN.md`.
+
 ## 2026-11-15 — Arreglo del diseño en teléfono
 
 **Qué se hizo**

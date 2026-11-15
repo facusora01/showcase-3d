@@ -534,6 +534,7 @@ $('simBtn').addEventListener('click', startSim);
 $('recBtn').addEventListener('click', recordVideo);
 $('snapBtn').addEventListener('click', snapshot);
 $('cancelBtn').addEventListener('click', () => { cancelReq = true; if (sim) sim.cancel = true; });
+$('closeVidBtn').addEventListener('click', () => { $('resultVid').pause(); $('resultBox').hidden = true; });
 $('saveAgainBtn').addEventListener('click', () => lastVideo && saveFile(lastVideo.blob, lastVideo.name));
 $('clearBtn').addEventListener('click', () => { clearParts(); current3mf = null; show3mfControls(); afterChange(false); setStatus(''); });
 $('plateSel').addEventListener('change', reload3mf);

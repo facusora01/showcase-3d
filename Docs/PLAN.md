@@ -11,6 +11,7 @@
 - Zoom con la rueda limitado para que el modelo no salga del visor.
 - Teléfono: el cartel inicial ya no se sale del visor, los botones no se cortan ni
   se pisan con los bordes, encabezado ordenado (título + idioma arriba, bajada abajo).
+- "Último video" ya no achica el visor al aparecer, y tiene botón "Cerrar".
 
 ## En curso
 

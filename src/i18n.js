@@ -18,6 +18,7 @@ const EN = {
   'Reencuadrar': 'Reframe',
   'Último video': 'Last video',
   'Guardar de nuevo': 'Save again',
+  'Cerrar': 'Close',
   'Controles': 'Controls',
   'Piezas': 'Parts',
   'Abrir…': 'Open…',

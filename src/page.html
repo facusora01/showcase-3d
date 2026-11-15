@@ -33,6 +33,8 @@ header.top p{margin:0;color:var(--faint);font-size:12px;line-height:16px}
 header.top .seg{margin-left:auto;align-self:center}
 header.top .seg button{padding:0 12px;flex:none}
 .stagewrap{min-width:0;display:flex;flex-direction:column;gap:12px}
+/* el visor tiene alto fijo (lo calcula app.js): que el video de abajo no lo achique */
+.stagewrap>*{flex:none}
 .stage{position:relative;margin:0 auto;max-width:100%;background:var(--bg-stage);border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--line)}
 .stage canvas{display:block;width:100%;height:100%}
 .empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;border:1.5px dashed var(--line-strong);border-radius:var(--r-xl);margin:16px;background:var(--bg-stage)}
@@ -92,7 +94,7 @@ select option{background:var(--card);color:var(--fg)}
 .btn:disabled{opacity:.5;cursor:default}
 .btn[data-ic]::before{content:"";flex:none;width:20px;height:20px;background:currentColor;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
 [data-ic=folder]{--ic:ICON(folder)}[data-ic=plus]{--ic:ICON(plus)}[data-ic=trash]{--ic:ICON(trash)}[data-ic=rec]{--ic:ICON(rec)}
-[data-ic=camera]{--ic:ICON(camera)}[data-ic=play]{--ic:ICON(play)}[data-ic=reset]{--ic:ICON(reset)}[data-ic=frame]{--ic:ICON(frame)}[data-ic=pause]{--ic:ICON(pause)}
+[data-ic=camera]{--ic:ICON(camera)}[data-ic=play]{--ic:ICON(play)}[data-ic=reset]{--ic:ICON(reset)}[data-ic=frame]{--ic:ICON(frame)}[data-ic=pause]{--ic:ICON(pause)}[data-ic=close]{--ic:ICON(close)}
 #playBtn[aria-pressed=false]{--ic:ICON(play)}
 button:focus-visible,select:focus-visible,input:focus-visible,label.btn:focus-within{outline:2px solid var(--brand-text);outline-offset:2px}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
@@ -182,7 +184,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,label.btn:focus-wi
     </div>
     <div id="resultBox" class="panel" hidden style="align-self:stretch">
       <div class="sec">
-        <h2>Último video</h2>
+        <div class="row" style="justify-content:space-between"><h2>Último video</h2><button class="btn ghost" data-ic="close" id="closeVidBtn" type="button">Cerrar</button></div>
         <video id="resultVid" controls playsinline loop style="max-width:100%;max-height:440px;border-radius:10px;background:#000"></video>
         <div class="row"><button class="btn" id="saveAgainBtn" type="button">Guardar de nuevo</button><span class="tag" id="resultInfo"></span></div>
       </div>
