@@ -95,7 +95,7 @@ select option{background:var(--card);color:var(--fg)}
 [data-ic=camera]{--ic:ICON(camera)}[data-ic=play]{--ic:ICON(play)}[data-ic=reset]{--ic:ICON(reset)}[data-ic=frame]{--ic:ICON(frame)}[data-ic=pause]{--ic:ICON(pause)}
 #playBtn[aria-pressed=false]{--ic:ICON(play)}
 button:focus-visible,select:focus-visible,input:focus-visible,label.btn:focus-within{outline:2px solid var(--brand-text);outline-offset:2px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
 .actions{display:flex;flex-direction:column;gap:10px}
 .parts{display:flex;flex-direction:column;gap:6px}
 .part{display:grid;grid-template-columns:22px minmax(0,1fr) 32px;align-items:center;gap:12px;height:44px;background:var(--control);border:1px solid var(--line);border-radius:var(--r-md);padding:0 6px 0 12px;cursor:pointer}
@@ -125,6 +125,24 @@ button:focus-visible,select:focus-visible,input:focus-visible,label.btn:focus-wi
 }
 @media (max-width:900px){
   .btn,.seg button,select,input[type=text],#rotSeg button{min-height:44px}
+}
+/* teléfono: el encabezado pone título e idioma en una línea y la bajada abajo;
+   el cartel inicial no entra en el visor cuadrado, así que el visor crece hasta contenerlo */
+@media (max-width:600px){
+  header.top{gap:8px 16px;padding:8px 0}
+  header.top .sep{display:none}
+  header.top p{order:1;flex-basis:100%}
+  .stage:has(>.empty:not([hidden])){height:auto!important;min-height:280px}
+  .stage:has(>.empty:not([hidden])) canvas{position:absolute;inset:0}
+  .stage>.empty{position:relative;inset:auto;margin:12px;padding:20px 16px;gap:12px}
+  .empty .row{flex-direction:column;align-items:stretch;width:100%;max-width:280px}
+  /* botones con texto largo: que tomen el ancho de su texto y bajen de línea antes que cortarse */
+  .sec>.row>.btn.filebtn{flex:1 0 auto}
+  .seg button{flex:1 1 auto}
+}
+@media (max-width:400px){
+  #rotSeg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  #rotSeg button:first-child{grid-column:1/-1}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
