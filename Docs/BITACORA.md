@@ -1,5 +1,16 @@
 # Bitácora
 
+## 2026-11-20 — Link en inglés, menos brillo
+
+**Qué se hizo**
+- Texto de la vista previa del link (`description`, `og:description`, `og:image:alt`) en
+  inglés, sin "En español e inglés" (pedido de Facu).
+- Silk, PETG y Resina brillan menos: más rugosidad, menos clearcoat, reflejos y especular.
+
+**Probado:** `npm test` y build web. **No probado:** el brillo nuevo con un modelo cargado.
+
+**Por dónde seguir:** ver `PLAN.md`.
+
 ## 2026-11-20 — Link violeta, favicon, luz y PLA
 
 **Qué se hizo**
