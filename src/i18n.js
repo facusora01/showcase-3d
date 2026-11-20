@@ -46,7 +46,7 @@ const EN = {
   'Tamaño': 'Size',
   'Luz y material': 'Light and material',
   'Terminación': 'Finish',
-  'Mate (PLA)': 'Matte (PLA)', 'Seda': 'Silk', 'Brillante (PETG)': 'Glossy (PETG)', 'Resina': 'Resin',
+  'Resina': 'Resin', 'Altura luz': 'Light height',
   'Intensidad': 'Intensity',
   'Dirección': 'Angle',
   'Fondo': 'Background',

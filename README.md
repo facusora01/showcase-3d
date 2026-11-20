@@ -4,7 +4,7 @@ Programa para Windows y página web que muestra modelos 3D con sus colores reale
 
 - Abre **3MF** (incluidos los proyectos de OrcaSlicer, con los colores de los filamentos, pintura a mano y placas) y **STL**.
 - Vista previa en vivo, simulación del video y grabación en **MP4 (H.264)**, listo para WhatsApp.
-- Duración, vueltas, sentido, altura de cámara, tamaño, luz, terminación (mate, seda, brillante, resina), fondo y texto opcional.
+- Duración, vueltas, sentido, altura de cámara, tamaño, luz (intensidad, dirección 360° y altura), terminación (PLA, Silk, PETG, resina), fondo y texto opcional.
 - Formatos 1:1, 4:5, 9:16 y 16:9, en HD o Full HD, a 30 o 60 cuadros por segundo.
 - En español o inglés (botón ES / EN arriba a la derecha).
 - Versión web: https://showcase3d.facundosorasio.com/ (Chrome o Edge para grabar video).
