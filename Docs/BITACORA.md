@@ -1,5 +1,24 @@
 # Bitácora
 
+## 2026-11-20 — Link violeta, favicon, luz y PLA
+
+**Qué se hizo**
+- Vista previa del link (`assets/og.jpg`): rehecha con el diseño nuevo (isotipo, "3D" en
+  violeta, brillo violeta detrás del modelo, etiqueta violeta). Armada en HTML y capturada
+  con Chrome headless; el modelo es el recorte del render anterior.
+- Favicon: el isotipo es angosto (17x28) y el SVG tenía `preserveAspectRatio="none"`, así
+  que la pestaña lo estiraba. `build-web.mjs` ahora lo centra en un lienzo cuadrado.
+- Luz: la dirección gira 360° (antes ±90°) y hay un slider nuevo "Altura luz" (5°–85°,
+  inicio 42°, igual que antes). Intensidad ya existía.
+- PLA menos brillante (roughness 0.85, envMap 0.3, specular 0.4). Terminaciones renombradas
+  a PLA, Silk, PETG, Resina (Facu pidió sacar "Brillante").
+
+**Probado:** `npm test`, build web, captura del panel en Chrome headless.
+**No probado:** cómo se ve el PLA nuevo con un modelo cargado; WhatsApp cachea la vista
+previa vieja, puede tardar en refrescarse.
+
+**Por dónde seguir:** ver `PLAN.md`.
+
 ## 2026-11-15 — Caja "Último video"
 
 **Qué se hizo**

@@ -226,11 +226,12 @@ button:focus-visible,select:focus-visible,input:focus-visible,label.btn:focus-wi
     <section class="sec">
       <h2>Luz y material</h2>
       <div class="field"><label for="mat">Terminación</label>
-        <select id="mat"><option value="matte" selected>Mate (PLA)</option><option value="silk">Seda</option><option value="gloss">Brillante (PETG)</option><option value="resin">Resina</option></select></div>
+        <select id="mat"><option value="matte" selected>PLA</option><option value="silk">Silk</option><option value="gloss">PETG</option><option value="resin">Resina</option></select></div>
       <div class="field"><label for="bgSel">Fondo</label>
         <select id="bgSel"><option value="studio" selected>Estudio oscuro</option><option value="black">Negro</option><option value="grey">Gris claro</option><option value="white">Blanco</option></select></div>
       <div class="field"><label for="light">Intensidad</label><input id="light" type="range" min="20" max="200" step="1" value="100"><output id="lightO">100%</output></div>
-      <div class="field"><label for="lightAng">Dirección</label><input id="lightAng" type="range" min="-90" max="90" step="1" value="-35"><output id="lightAngO">-35°</output></div>
+      <div class="field"><label for="lightAng">Dirección</label><input id="lightAng" type="range" min="-180" max="180" step="1" value="-35"><output id="lightAngO">-35°</output></div>
+      <div class="field"><label for="lightEl">Altura luz</label><input id="lightEl" type="range" min="5" max="85" step="1" value="42"><output id="lightElO">42°</output></div>
       <div class="row"><input id="shadow" type="checkbox" checked><label for="shadow">Sombra en el piso</label></div>
     </section>
 

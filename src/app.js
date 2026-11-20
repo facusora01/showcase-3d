@@ -59,7 +59,7 @@ const floor = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShadowMate
 floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
 
 const state = {
-  pose: 'print', dur: 10, turns: 1, dir: 1, tilt: 25, zoom: 1, mat: 'matte', light: 1, lightAng: -35,
+  pose: 'print', dur: 10, turns: 1, dir: 1, tilt: 25, zoom: 1, mat: 'matte', light: 1, lightAng: -35, lightEl: 42,
   bg: 'studio', shadow: true, fmt: '1:1', qual: 1080, fps: 30, caption: '', playing: true, angle: 0,
 };
 const speed = () => state.dir * state.turns * 2 * Math.PI / state.dur; // rad/s, igual en vista previa y video
@@ -82,10 +82,10 @@ function applyBg() { scene.background = BG[state.bg]; floor.material.opacity = l
 // ---------- materiales ----------
 function tune(m) {
   const P = {
-    matte: { roughness: 0.62, metalness: 0, clearcoat: 0, envMapIntensity: 0.55 },
-    silk: { roughness: 0.26, metalness: 0.38, clearcoat: 0.2, envMapIntensity: 1.0 },
-    gloss: { roughness: 0.16, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.1, envMapIntensity: 0.9 },
-    resin: { roughness: 0.35, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, envMapIntensity: 0.7 },
+    matte: { roughness: 0.85, metalness: 0, clearcoat: 0, envMapIntensity: 0.3, specularIntensity: 0.4 },
+    silk: { roughness: 0.26, metalness: 0.38, clearcoat: 0.2, envMapIntensity: 1.0, specularIntensity: 1 },
+    gloss: { roughness: 0.16, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.1, envMapIntensity: 0.9, specularIntensity: 1 },
+    resin: { roughness: 0.35, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, envMapIntensity: 0.7, specularIntensity: 1 },
   }[state.mat];
   Object.assign(m, P); m.needsUpdate = true;
 }
@@ -147,8 +147,9 @@ function frameCamera() {
 let lastR = 50;
 function placeLights(R = lastR) {
   lastR = R;
-  const a = THREE.MathUtils.degToRad(state.lightAng), d = R * 6;
-  key.position.set(Math.sin(a) * d, d * 0.9, Math.cos(a) * d); key.intensity = 2.2 * state.light;
+  const a = THREE.MathUtils.degToRad(state.lightAng), el = THREE.MathUtils.degToRad(state.lightEl), d = R * 6;
+  const h = d * 1.35 * Math.cos(el); // ~d horizontal y 0.9d de alto con la altura de inicio (42°)
+  key.position.set(Math.sin(a) * h, d * 1.35 * Math.sin(el), Math.cos(a) * h); key.intensity = 2.2 * state.light;
   const sc = key.shadow.camera, e = R * 2.2;
   Object.assign(sc, { left: -e, right: e, top: e, bottom: -e, near: d * 0.2, far: d * 3 }); sc.updateProjectionMatrix();
   fill.position.set(-Math.sin(a) * d, d * 0.3, d * 0.8); fill.intensity = 0.7 * state.light;
@@ -507,6 +508,7 @@ range('tilt', 'tilt', (v) => v + '°', Number, () => frameCamera());
 range('zoom', 'zoom', (v) => v + '%', (v) => v / 100, () => frameCamera());
 range('light', 'light', (v) => v + '%', (v) => v / 100, () => placeLights());
 range('lightAng', 'lightAng', (v) => v + '°', Number, () => placeLights());
+range('lightEl', 'lightEl', (v) => v + '°', Number, () => placeLights());
 $('dur').addEventListener('change', (e) => (state.dur = +e.target.value));
 $('turns').addEventListener('change', (e) => (state.turns = +e.target.value));
 $('mat').addEventListener('change', (e) => { state.mat = e.target.value; parts.forEach((p) => tune(p.mesh.material)); });

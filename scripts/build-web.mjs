@@ -38,6 +38,9 @@ const page = fs.readFileSync(r('src/page.html'), 'utf8')
   .replace('/*SAMPLE*/', () => fs.readFileSync(r('src/sample.json'), 'utf8'))
   .replace('/*BUNDLE*/', () => js);
 
+// favicon: el isotipo es angosto (17x28); centrado en un lienzo cuadrado para que no se aplaste
+const favicon = svg('isotipo').replace(/<svg[^>]*>/, '<svg viewBox="-5.49 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">');
+
 // vista previa del link (WhatsApp, redes): la imagen la publica el workflow de GitHub Pages
 const SITE = 'https://showcase3d.facundosorasio.com/';
 const DESC = 'Mostrá tus modelos 3D (3MF y STL) con sus colores y generá un video girando para tus clientes. En español e inglés.';
@@ -48,7 +51,7 @@ const meta = [
   ['property', 'og:image', SITE + 'og.jpg'], ['property', 'og:image:width', '1200'], ['property', 'og:image:height', '630'], ['property', 'og:image:type', 'image/jpeg'],
   ['property', 'og:image:alt', 'Showcase 3D: modelo 3D naranja girando'], ['name', 'twitter:card', 'summary_large_image'],
 ].map(([k, n, v]) => `<meta ${k}="${n}" content="${v}">`).join('');
-const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' + meta + '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,' + Buffer.from(svg('isotipo')).toString('base64') + '"><link rel="icon" href="favicon.png"></head><body>' + body + '</body></html>';
+const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' + meta + '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,' + Buffer.from(favicon).toString('base64') + '"><link rel="icon" href="favicon.png"></head><body>' + body + '</body></html>';
 
 // 1) versión para abrir en el navegador
 fs.writeFileSync(r('dist', 'Showcase 3D.html'), wrap(page));
