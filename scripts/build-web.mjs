@@ -43,13 +43,13 @@ const favicon = svg('isotipo').replace(/<svg[^>]*>/, '<svg viewBox="-5.49 0 28 2
 
 // vista previa del link (WhatsApp, redes): la imagen la publica el workflow de GitHub Pages
 const SITE = 'https://showcase3d.facundosorasio.com/';
-const DESC = 'Mostrá tus modelos 3D (3MF y STL) con sus colores y generá un video girando para tus clientes. En español e inglés.';
+const DESC = 'Show your 3D models (3MF and STL) in their colors and make a spinning video for your clients.';
 const meta = [
   ['name', 'description', DESC], ['name', 'theme-color', '#0f1114'],
   ['property', 'og:type', 'website'], ['property', 'og:site_name', 'Showcase 3D'], ['property', 'og:title', 'Showcase 3D'],
   ['property', 'og:description', DESC], ['property', 'og:url', SITE],
   ['property', 'og:image', SITE + 'og.jpg'], ['property', 'og:image:width', '1200'], ['property', 'og:image:height', '630'], ['property', 'og:image:type', 'image/jpeg'],
-  ['property', 'og:image:alt', 'Showcase 3D: modelo 3D naranja girando'], ['name', 'twitter:card', 'summary_large_image'],
+  ['property', 'og:image:alt', 'Showcase 3D: orange 3D model spinning'], ['name', 'twitter:card', 'summary_large_image'],
 ].map(([k, n, v]) => `<meta ${k}="${n}" content="${v}">`).join('');
 const wrap = (body) => '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' + meta + '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,' + Buffer.from(favicon).toString('base64') + '"><link rel="icon" href="favicon.png"></head><body>' + body + '</body></html>';
 

@@ -13,7 +13,8 @@
   se pisan con los bordes, encabezado ordenado (título + idioma arriba, bajada abajo).
 - "Último video" ya no achica el visor al aparecer, y tiene botón "Cerrar".
 - Vista previa del link con el diseño violeta nuevo; favicon cuadrado (no se aplasta).
-- Luz: dirección 360° y altura regulable. PLA menos brillante. Terminaciones: PLA, Silk, PETG, Resina.
+- Luz: dirección 360° y altura regulable. PLA, Silk, PETG y Resina menos brillantes.
+- Vista previa del link con texto en inglés. Terminaciones: PLA, Silk, PETG, Resina.
 
 ## En curso
 

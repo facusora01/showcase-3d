@@ -83,9 +83,9 @@ function applyBg() { scene.background = BG[state.bg]; floor.material.opacity = l
 function tune(m) {
   const P = {
     matte: { roughness: 0.85, metalness: 0, clearcoat: 0, envMapIntensity: 0.3, specularIntensity: 0.4 },
-    silk: { roughness: 0.26, metalness: 0.38, clearcoat: 0.2, envMapIntensity: 1.0, specularIntensity: 1 },
-    gloss: { roughness: 0.16, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.1, envMapIntensity: 0.9, specularIntensity: 1 },
-    resin: { roughness: 0.35, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.3, envMapIntensity: 0.7, specularIntensity: 1 },
+    silk: { roughness: 0.38, metalness: 0.25, clearcoat: 0.1, clearcoatRoughness: 0.3, envMapIntensity: 0.6, specularIntensity: 0.6 },
+    gloss: { roughness: 0.3, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.25, envMapIntensity: 0.5, specularIntensity: 0.6 },
+    resin: { roughness: 0.45, metalness: 0, clearcoat: 0.2, clearcoatRoughness: 0.4, envMapIntensity: 0.45, specularIntensity: 0.6 },
   }[state.mat];
   Object.assign(m, P); m.needsUpdate = true;
 }
